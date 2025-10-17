@@ -1,0 +1,98 @@
+I want to improve the security of my yearbook viewer by preventing users from downloading or saving yearbook images — especially on mobile devices like iPads.
+Right now, my app stores and serves yearbook pages locally (no cloud bucket yet).
+
+Here’s what to do 👇
+
+
+---
+
+1️⃣ Route images securely through the backend
+
+All yearbook image files should no longer be accessed directly via URLs like /uploads/page1.jpg.
+
+Instead, they should be served through a protected route, for example:
+
+/api/yearbooks/:yearbookId/page/:pageNumber
+
+In that route:
+
+Use res.sendFile() to send the image file from local storage.
+
+Before sending, verify that:
+
+The user is authenticated (check session or token).
+
+The user has permission to access that yearbook (for example, they purchased/unlocked it).
+
+
+If either check fails, return a 403 Forbidden response.
+
+
+
+This ensures that even if someone copies the image link or opens it in a new tab, it won’t load unless they are authorized.
+
+
+---
+
+2️⃣ Frontend protection (anti-download & anti-long-press)
+
+Add the following global JavaScript listeners in your app (ideally in a global layout or component that wraps the viewer):
+
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('touchstart', e => {
+  if (e.target.tagName === 'IMG') e.preventDefault();
+});
+
+Add these CSS rules globally (e.g., in globals.css or equivalent):
+
+img {
+  pointer-events: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+
+This should block right-click, long-press, and “Open in New Tab” behavior on both desktop and mobile browsers.
+
+
+---
+
+3️⃣ Background rendering alternative (optional but recommended)
+
+If the current <img> tag system still allows saving in some browsers, give an option for the viewer pages to render each page as a background image instead of an <img> tag:
+
+<div
+  style={{
+    backgroundImage: url(${imageUrl}),
+    backgroundSize: 'contain',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center',
+    width: '100%',
+    height: '100%',
+  }}
+></div>
+
+This further hides the image from long-press menus and makes direct downloads harder.
+
+
+---
+
+4️⃣ Testing
+
+Test on Safari (iPad), Chrome (Android), and desktop browsers.
+
+Make sure:
+
+You can still see the yearbook pages.
+
+You cannot hold or right-click to save them.
+
+You cannot open the images in new tabs or fetch them via direct URL.
+
+
+
+
+---
+
+🧩 Goal:
+Users should only be able to view the yearbook pages within the app interface — they should not be able to download, save, or access them outside the authorized viewer.

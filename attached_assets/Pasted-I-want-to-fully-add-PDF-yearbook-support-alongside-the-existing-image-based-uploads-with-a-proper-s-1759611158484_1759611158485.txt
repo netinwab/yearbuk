@@ -1,0 +1,103 @@
+I want to fully add PDF yearbook support alongside the existing image-based uploads, with a proper setup choice when schools first configure a yearbook.
+Here’s what to do:
+
+
+---
+
+1. 📄 Setup Flow (Frontend)
+
+On the initial yearbook setup window (where schools currently choose orientation — portrait or landscape), add a new option:
+
+“Upload Mode”: choose between
+Image Uploads (existing system) or PDF Uploads (new system).
+
+
+This upload mode should be stored in the yearbook schema under:
+
+uploadType: "image" | "pdf"
+
+The uploadType selection should appear before or alongside orientation, and both values should be saved together once the setup is complete.
+
+The setup modal should still only appear once per yearbook (controlled by isInitialized).
+
+
+
+---
+
+2. ⚙️ School Upload (Backend)
+
+The PDF upload feature already exists, but it’s currently mixed in with the image upload system. Separate the logic clearly:
+
+If uploadType === "pdf", enable PDF upload.
+
+If uploadType === "image", enable the current multi-image upload.
+
+
+When a PDF is uploaded:
+
+Split it into individual page images (JPG or PNG) using a supported library (pdf-lib, pdfjs, or equivalent).
+
+Save each page image in the same structure as the image-based uploads so everything else works consistently.
+
+No front or back cover constants are required for PDF uploads (since the file already contains all pages).
+
+Each split page should be numbered automatically for the table of contents feature.
+
+
+
+
+---
+
+3. 🧭 Yearbook Management (School Dashboard)
+
+When a school uploads a PDF:
+
+Display generated page thumbnails at the bottom of the yearbook-manage page (same layout as image uploads).
+
+These thumbnails are not editable or re-orderable (PDFs are already pre-arranged).
+
+
+When a school uploads images (the regular way), all existing functionality remains unchanged.
+
+The yearbook management interface should automatically switch between the image mode and PDF mode depending on uploadType.
+
+
+
+---
+
+4. 👀 Viewer Experience (Frontend)
+
+For viewers/alumni:
+
+Yearbooks uploaded as PDFs should appear exactly the same as image-based ones.
+
+The flipbook, grid view, or 2-page spread view should still work properly — the source of the pages shouldn’t matter.
+
+Viewers should not be able to tell whether a yearbook came from a PDF or from image uploads.
+
+
+
+
+---
+
+5. ⚡ Integration & Clean-Up
+
+Ensure this new system integrates seamlessly with existing yearbook data and doesn’t break anything.
+
+Treat PDF yearbooks as just another upload type.
+
+Preserve existing functionality for table of contents, page numbering, and viewing.
+
+Remove any redundant or duplicate code related to the old combined PDF/image system.
+
+Keep all current UI styling consistent with the rest of the app.
+
+
+
+---
+
+✅ Notes
+
+The PDF upload code partially exists — don’t recreate it. Just separate it cleanly into its own conditional system and connect it to uploadType.
+
+This update adds a cleaner setup process and gives schools full control to pick their upload format from the start.

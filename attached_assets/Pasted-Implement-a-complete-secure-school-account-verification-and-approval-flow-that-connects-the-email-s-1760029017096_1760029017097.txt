@@ -1,0 +1,120 @@
+Implement a complete, secure school-account verification and approval flow that connects the email system with the super-admin’s “Pending Schools” tab.
+
+
+---
+
+1️⃣ Email Verification for School Accounts
+
+When a school account signs up, trigger the existing Resend email verification system (like viewers) using the onboarding@resend.dev sandbox address for now.
+
+Once the school clicks the verification link, update the database record:
+
+email_verified = true
+is_approved = false
+
+After verification, instead of granting dashboard access, redirect them to a new page or modal that says:
+
+> “Your Waibuk registration request has been received and will be reviewed by our moderation team. Expect a response within 3–5 business days.”
+
+
+
+
+
+---
+
+2️⃣ Admin Review Workflow (Pending Schools)
+
+Extend the Pending Schools tab to display:
+
+School name
+
+Email
+
+Founding year
+
+Country
+
+Date submitted
+
+Email verified status
+
+
+Only schools with email_verified = true and is_approved = false should appear here.
+
+Add:
+
+✅ Approve button → sets is_approved = true and automatically sends a Resend email saying
+
+> “Your Waibuk account has been approved. You can now log in and begin managing your yearbooks.”
+
+
+
+❌ Deny button → deletes or flags the account and sends a polite rejection email.
+
+
+Both buttons must prompt the super-admin password confirmation before action is completed.
+
+Once approved or denied, remove the school from the pending list.
+
+
+
+---
+
+3️⃣ School Login Behavior
+
+Update the login logic for school accounts:
+
+If email_verified = false: show message
+
+> “Please verify your email before logging in.”
+
+
+
+If email_verified = true but is_approved = false: show message
+
+> “Your account is pending approval by Waibuk moderators.”
+
+
+
+Only allow access if both are true.
+
+
+
+
+---
+
+4️⃣ Notifications and Quality of Life
+
+When a new verified (but unapproved) school is added to the pending list, trigger a notification for the super-admin (use the existing notification system logic as reference).
+
+Keep consistent styling and behavior with the existing viewer email verification setup.
+
+Make sure this flow integrates with the current Pending Schools tab — do not rebuild it from scratch.
+
+
+
+---
+
+⚙️ Developer Notes
+
+You can reuse the existing viewer email-verification logic; just fork it for school accounts.
+
+For now, keep Resend in sandbox mode — once a domain is verified, switching the sender to something like noreply@waibuk.com should work seamlessly.
+
+Be sure to handle all database schema updates if needed (e.g., ensure is_approved and email_verified fields exist in the schools table).
+
+
+
+---
+
+✅ Deliverables
+
+Fully functional flow:
+
+Email verification for schools
+
+Pending approval moderation via super-admin
+
+Approval/rejection email system
+
+Proper access restriction for unapproved or unverified schools

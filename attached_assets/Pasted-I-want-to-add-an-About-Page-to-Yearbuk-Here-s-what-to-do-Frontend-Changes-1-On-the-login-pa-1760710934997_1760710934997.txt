@@ -1,0 +1,128 @@
+I want to add an About Page to Yearbuk.
+
+Here’s what to do:
+
+🧩 Frontend Changes
+
+1. On the login page, add a small button labeled “About Yearbuk” below the login form.
+
+When clicked, it should route users to a new page: /about.
+
+This button should match the theme and color palette of the login page.
+
+
+
+2. Create a new route /about that displays a clean, scrollable page explaining what Yearbuk is and how it works.
+
+
+3. At the top header of the About page, add a banner-style button saying:
+“Done testing? Take our survey →”
+
+The button should stand out and redirect to the external survey link (I’ll provide it later).
+
+Make sure this banner is responsive and stays visible on mobile screens.
+
+
+
+
+
+---
+
+📝 About Page Content
+
+Here’s the full content to include on the page (you can format it nicely using cards, sections, or dividers):
+
+
+---
+
+What is Yearbuk?
+
+Yearbuk is a digital yearbook platform built to bring schools, students, and alumni together in a modern, interactive way.
+It reimagines traditional printed yearbooks into a simple, secure, and accessible online system that anyone can explore anytime, anywhere.
+
+
+---
+
+For Schools
+
+Schools can:
+
+Create and manage digital yearbooks for each graduating class.
+
+Choose between PDF uploads or image-based pages for flexibility.
+
+Set their own yearbook prices, manage alumni requests, and track purchases.
+
+Generate upload codes for students to submit memories and photos directly.
+
+Communicate with verified alumni through the built-in notification system.
+
+Enjoy full control over their content with advanced moderation tools.
+
+
+
+---
+
+For Viewers and Alumni
+
+Viewers and alumni can:
+
+Search and access their school’s yearbooks instantly.
+
+Verify their alumni status to unlock upload privileges and alumni badges.
+
+Receive notifications when new uploads or updates are available.
+
+Purchase and view yearbooks in a realistic page-flip experience.
+
+Manage up to four alumni badges, with an option to buy more if needed.
+
+
+
+---
+
+Security & Verification
+
+Yearbuk uses email verification, 2FA, and encrypted storage to ensure that all accounts and data are fully secure.
+Schools must be verified by the Yearbuk moderation team before they can publish content, keeping the platform professional and authentic.
+
+
+---
+
+How It Works
+
+1. Schools sign up, verify, and start creating digital yearbooks.
+
+
+2. Alumni and viewers join to explore, view, and contribute to their class memories.
+
+
+3. Yearbuk connects everyone through secure uploads, purchase systems, and community updates — making nostalgia interactive and accessible.
+
+
+
+
+---
+
+Our Vision
+
+Yearbuk was built to preserve memories in a more accessible, eco-friendly way.
+We aim to make yearbooks live forever — beautifully designed, secure, and always within reach.
+
+
+---
+
+Need Help?
+
+If you encounter any issues or want to share suggestions, you can reach out directly through the survey link above.
+
+
+---
+
+⚙️ Implementation Notes
+
+Keep the About Page visually modern, using the same typography and UI elements as the rest of the app.
+
+Ensure it’s accessible both from desktop and mobile devices.
+
+Add a “Back to Login” button at the bottom of the page for convenience.

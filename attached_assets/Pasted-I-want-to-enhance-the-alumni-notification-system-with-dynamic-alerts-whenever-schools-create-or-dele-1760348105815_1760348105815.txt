@@ -1,0 +1,179 @@
+I want to enhance the alumni notification system with dynamic alerts whenever schools create or delete upload codes.
+
+
+---
+
+🧩 1. Trigger Logic (Backend)
+
+When a school account successfully creates a new upload code, trigger a backend function:
+
+sendNotificationToVerifiedAlumni(schoolId: string, graduationYear: string, uploadCode: string, expiresAt: Date)
+
+This function should:
+
+Fetch all verified alumni tied to that school.
+
+Create a notification entry for each alumni user.
+
+Include an expiry countdown derived from expiresAt.
+
+
+
+
+---
+
+📨 2. Notification Content
+
+Each alumni receives a notification with the following details:
+
+Title: Upload Code from [School Name]
+
+Body:
+Graduation [Year] — [Upload Code]
+Expires in [X hours/minutes]
+
+Link: /alumni/uploads
+
+Include a copy button beside the code to easily copy it to clipboard.
+
+
+Example:
+
+> Upload Code from Albany College
+Graduation 2013 — ABC123
+Expires in 4 hours
+[📋 Copy Code]
+
+
+
+
+---
+
+🗄️ 3. Database (if not already present)
+
+Use or update the existing notifications table with:
+
+id: string
+recipient_id: string
+title: string
+body: string
+link?: string
+upload_code?: string
+expires_at?: Date
+read: boolean
+created_at: Date
+
+upload_code stores the code value.
+
+expires_at stores the expiration timestamp.
+
+read defaults to false.
+
+
+
+---
+
+🔄 4. Auto-Deletion Logic
+
+When a school deletes an upload code, find all notifications tied to that code and delete them automatically from the alumni dashboards.
+
+This cleanup should happen immediately to prevent outdated codes being visible.
+
+
+
+---
+
+⏱️ 5. Expiration Timer Display
+
+On the alumni frontend:
+
+Calculate remaining time between expires_at and now.
+
+Display dynamically:
+
+If > 1 hour → “Expires in X hours”
+
+If < 1 hour → “Expires in X minutes”
+
+
+If expired, gray out the notification and disable the “Copy” button.
+
+
+
+---
+
+💬 6. Frontend (Alumni Dashboard)
+
+Show notifications in descending order (newest first).
+
+Each notification should show:
+
+Title (school name)
+
+Upload code
+
+Expiry text
+
+Copy button
+
+Timestamp
+
+
+Mark notification as read when opened.
+
+Support deleting notifications manually.
+
+
+
+---
+
+🏫 7. School Experience
+
+No notifications for schools.
+
+When creating upload codes, no extra UI changes are needed — just ensure notifications trigger automatically on creation.
+
+
+
+---
+
+📧 8. Optional Email Notifications
+
+Add an optional step where, when the notification is created, an email notification is also sent to verified alumni.
+Use the existing email system (Resend).
+The email should include:
+
+School name
+
+Graduation year
+
+Upload code
+
+Expiry time (e.g. “Expires in 6 hours”)
+
+A “Copy Code” button that copies the code or links to the alumni upload page.
+
+
+Example email subject:
+
+> New Upload Code from Albany College
+
+
+
+
+---
+
+⚙️ 9. Performance & Cleanup
+
+Use bulk inserts when notifying multiple alumni.
+
+Use background processing (async) for email notifications.
+
+Add a daily cleanup job to remove expired notifications automatically.
+
+
+
+---
+
+💡 Goal:
+This system ensures verified alumni are instantly alerted when their school creates or deletes upload codes, showing clear expiration info and quick access (copy and upload).

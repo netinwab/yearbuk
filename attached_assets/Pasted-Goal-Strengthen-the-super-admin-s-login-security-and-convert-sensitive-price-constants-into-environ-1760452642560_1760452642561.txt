@@ -1,0 +1,77 @@
+Goal: Strengthen the super admin’s login security and convert sensitive price constants into environment variables.
+
+
+---
+
+🛡️ TASK 1 — Add Two-Factor Authentication (2FA) for Super Admin Only
+
+Objective: After the super admin enters their correct username and password, they must verify a one-time 6-digit code sent to their email address netonwabuisi83@gmail.com before access is granted.
+
+Details:
+
+After successful password entry, redirect to a new 2FA verification page.
+
+The page should show a message like:
+
+> “A 6-digit verification code has been sent to ne******3@gmail.com.”
+
+
+
+The code should:
+
+Be 6 digits long.
+
+Expire after 5 minutes.
+
+Become invalid immediately once a new code is resent.
+
+Have a 50-second cooldown before a resend is allowed.
+
+
+Add a “Resend Code” button with proper visual feedback (e.g., disabled countdown).
+
+Use the existing email system (Resend sandbox or live) to send the verification email.
+
+The verification page should validate the code before granting access to the super admin dashboard.
+
+All login attempts (successful or failed) should be logged in the super admin’s activity log for auditing.
+
+
+
+---
+
+💲 TASK 2 — Convert Pricing Constants to Environment Variables
+
+Objective: Replace hardcoded constants with environment variables for better security and flexibility.
+
+Convert the following constants:
+
+SCHOOL_YEAR_PRICE
+
+BADGE_SLOT_PRICE
+
+Any other price or commission-related constant (if any exist).
+
+
+Implementation:
+
+Move them into the .env file with names like:
+
+SCHOOL_YEAR_PRICE=6.99
+BADGE_SLOT_PRICE=0.49
+
+Update all references in the backend code to pull from process.env.SCHOOL_YEAR_PRICE and process.env.BADGE_SLOT_PRICE.
+
+Add fallback values (in case the environment variables are missing) to prevent runtime errors.
+
+Confirm that both Replit and Render environments load the variables correctly.
+
+
+
+---
+
+✅ Expected Result:
+
+Super admin login now requires an email-based 2FA verification step.
+
+Price values are no longer hardcoded; they are securely managed as environment variables.

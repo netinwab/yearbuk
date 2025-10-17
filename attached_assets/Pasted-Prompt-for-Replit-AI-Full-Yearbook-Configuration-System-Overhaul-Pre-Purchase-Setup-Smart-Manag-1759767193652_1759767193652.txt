@@ -1,0 +1,249 @@
+Prompt for Replit AI — Full Yearbook Configuration System Overhaul (Pre-Purchase Setup + Smart Management)
+
+I want to completely replace the current post-purchase setup system with a pre-purchase configuration dialog for yearbooks.
+
+The current setup page that appears after purchasing a year should be fully removed.
+The new system should let schools configure everything before buying, similar to selecting toppings before ordering a pizza.
+
+
+---
+
+⚙️ 1. Remove the Old System
+
+Delete or disable all logic related to the old setup window that appears after clicking “Manage.”
+
+Remove any conditions like !yearbook.orientation, !yearbook.isInitialized, or any setup-triggered reloads.
+
+The isInitialized field can stay in the schema for compatibility but should no longer be used.
+
+The setup page and any popups tied to it must be completely removed.
+
+
+
+---
+
+🧩 2. Add a New “Year Purchase Configuration” Dialog (Before Purchase)
+
+When a school selects a year to buy, instead of showing the small “add to cart” popup, display a larger interactive configuration dialog that includes all setup options and price confirmation in one place.
+
+Dialog Fields
+
+a. Yearbook Type (Required)
+
+Selection input (radio buttons or toggle):
+
+Image Upload (JPG/PNG)
+
+PDF Upload
+
+
+
+b. Orientation (Required)
+
+Options:
+
+Landscape
+
+Portrait
+
+
+
+c. Price Display
+
+Display the price of the selected year, just like the current small dialog.
+
+
+d. Add to Cart Button
+
+Button text:
+
+> “Confirm and Add to Cart”
+
+
+
+Disabled until both type and orientation are selected.
+
+
+
+---
+
+🛒 3. Integration with Cart and Purchase Flow
+
+When “Confirm and Add to Cart” is clicked:
+
+The selected preferences (yearbookType and orientation) are stored in a temporary cart object tied to that year.
+
+When checkout completes, those preferences are saved permanently in the Yearbook record.
+
+
+If the item is deleted from the cart:
+
+The year’s configuration (type + orientation) is wiped.
+
+If the same year is added again, the configuration dialog appears again and must be re-filled.
+
+This ensures that schools always confirm their settings before each purchase.
+
+
+
+---
+
+💾 4. Database & Schema Updates
+
+In the Yearbook schema:
+
+Add yearbookType: string — values: "pdf" or "image"
+
+Keep orientation: string — values: "portrait" or "landscape"
+
+Stop using isInitialized for logic (it can stay in schema for legacy reasons).
+
+Ensure the above two fields are stored when the yearbook is purchased — not afterward.
+
+
+
+---
+
+🧠 5. Yearbook Management (Auto Detection)
+
+After purchase, when the school clicks Manage:
+
+The system should auto-detect which type of yearbook (PDF or image) was selected and render the appropriate management interface:
+
+
+If yearbookType = "image":
+
+Load the existing image upload interface.
+
+Keep all current features (page arrangement, front/back covers, thumbnails, etc).
+
+
+If yearbookType = "pdf":
+
+Show a simpler PDF upload interface:
+
+A single “Upload PDF” button (file picker).
+
+When a PDF is uploaded, automatically split the PDF into individual page images using a library like pdf-lib, pdfjs, or pdf-poppler depending on what’s available in the setup.
+
+Display thumbnails of generated pages (not editable).
+
+No front or back cover constants required.
+
+Number the pages properly so the Table of Contents still works.
+
+
+
+
+---
+
+🎨 6. Viewer Experience (Frontend)
+
+For viewers/alumni:
+
+They should not notice any difference between PDF-based and image-based yearbooks.
+
+The viewer interface (flipbook or two-page spread) should behave identically regardless of upload type.
+
+The only backend difference is how the pages were uploaded and stored.
+
+
+
+---
+
+💬 7. UI/UX Design Details
+
+The pre-purchase configuration dialog should be clean, centered, and easy to use.
+
+Include clear headers like:
+
+“Select Yearbook Type”
+
+“Choose Orientation”
+
+“Confirm Purchase”
+
+
+The layout should resemble a modern e-commerce product configuration (like selecting laptop specs or pizza toppings).
+
+Display the total price clearly before confirmation.
+
+Ensure responsive design for both desktop and mobile views.
+
+
+
+---
+
+🧾 8. Behavior Summary
+
+1. School selects a year → configuration dialog appears.
+
+
+2. School selects yearbook type (PDF or image) and orientation (portrait or landscape).
+
+
+3. School clicks Confirm and Add to Cart → preferences saved temporarily.
+
+
+4. School checks out → Yearbook record created with those preferences saved.
+
+
+5. When the school clicks Manage, the system automatically opens the correct management interface (PDF or image).
+
+
+6. If the school removes the year from cart, configuration resets and must be re-done when re-added.
+
+
+7. For existing yearbooks from before this system, default to:
+
+yearbookType: "image"
+
+Keep their current orientation value.
+
+
+
+
+
+---
+
+🧰 9. Cleanup Tasks
+
+Remove all unnecessary setup code, reload triggers, and post-purchase setup conditions.
+
+Make sure no setup window appears after purchase.
+
+Double-check that the “Manage” button logic routes correctly based on yearbookType.
+
+Test thoroughly to confirm that:
+
+PDF upload → Works fine and pages display.
+
+Image upload → Still functions as before.
+
+Viewer sees consistent flipbook view for both types.
+
+
+
+
+---
+
+✅ 10. Final Goal
+
+After this update:
+
+No more setup after purchase.
+
+Schools configure everything before buying.
+
+The Manage page auto-detects and loads the correct interface.
+
+Removing from cart clears settings.
+
+Everything integrates seamlessly without breaking existing yearbook or memory functions.
+
+
+
+---
+
+⚡ Note:
+Some of these functions (like PDF uploads and cart flow) may already exist — review and reuse any existing working code where possible instead of recreating from scratch.

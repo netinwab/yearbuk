@@ -1,0 +1,121 @@
+I’ve already set up the backend email-sending configuration (SMTP) in Phase 1, and it works.
+Now, I want to connect it to the actual user flow — both frontend and backend.
+
+Here’s exactly what to do:
+
+
+---
+
+1. Database Update
+
+Add two new fields to the user schema (for both viewer and school accounts):
+
+isEmailVerified (Boolean, default false)
+
+emailVerificationToken (String — temporary token stored until user verifies)
+
+
+
+---
+
+2. Token Generation on Registration
+
+When a new user registers:
+
+Automatically generate a unique verification token (use crypto.randomBytes(32).toString("hex"))
+
+Store it in emailVerificationToken for that user
+
+Send a verification email to the user immediately after registration
+
+
+The email should contain:
+
+A subject like “Verify Your Waibuk Account”
+
+A verification link that points to /verify-email/:token on the frontend
+
+
+Example link:
+
+https://[MY_FRONTEND_URL]/verify-email/ab1234567890token
+
+
+---
+
+3. Frontend Verification Page
+
+Create a new page: verify-email/[token].tsx (or JS equivalent).
+
+When the user lands on that page:
+
+Call GET /api/verify-email/:token on the backend
+
+If the token is valid:
+
+Mark isEmailVerified = true and remove the token
+
+Display a success message (“Email verified successfully! You can now log in.”)
+
+Redirect to the login page after a few seconds
+
+
+If invalid or expired:
+
+Display an error message (“Invalid or expired verification link.”)
+
+
+
+
+---
+
+4. Backend Verification Endpoint
+
+Add a new route:
+
+app.get("/api/verify-email/:token", async (req, res) => {
+  // Find user by token  
+  // If found, set isEmailVerified = true, clear token, save user  
+  // Return success or error JSON
+});
+
+
+---
+
+5. Login Restriction
+
+During login (POST /api/login):
+
+If isEmailVerified === false, block login and return an error:
+"Please verify your email before logging in."
+
+
+
+---
+
+6. Optional Resend Verification Email Button
+
+On the login page or a special “Unverified Notice” page:
+Add a button to “Resend Verification Email.”
+When clicked, call POST /api/resend-verification to generate a new token and email it again.
+
+
+---
+
+7. Cleanup and Security
+
+Delete tokens after use or after 24 hours of expiry.
+
+Store tokens hashed (using SHA-256) if possible to avoid plain-text tokens in the database.
+
+
+
+---
+
+🧠 Notes for the AI:
+
+The email system from Phase 1 is already working, so you don’t need to set up SMTP again.
+
+Just build this verification flow on top of it.
+
+Keep the UI clean and use the existing style from the login / registration pages.

@@ -1,0 +1,129 @@
+Goal:
+Upgrade the Alumni Badge system to have synchronized deletion, verified badge rollback, slot purchasing, and proper UI behavior.
+
+
+---
+
+Tasks to Implement:
+
+🧩 1. Fix Badge Deletion Logic
+
+When a viewer deletes a pending alumni badge request, the corresponding pending record should also be deleted on the school’s side (so it disappears from their pending list).
+
+When a viewer deletes a verified badge, it should:
+
+Remove all changes or privileges associated with that verified badge (e.g., verified status indicators, alumni access, etc.).
+
+Also delete that badge record from the school’s end.
+
+
+Make sure these deletions work via API sync — e.g., use a shared badge_id or similar unique key to identify which badge to remove on both sides.
+
+
+
+---
+
+💳 2. Add Badge Slot Purchases
+
+Each viewer starts with 4 free badge slots.
+
+Create a new constant called:
+
+export const BADGE_SLOT_PRICE = 0.49;
+
+When a viewer runs out of slots and clicks “Upgrade for more slots”:
+
+Show a dialog/modal that allows selecting how many extra slots to buy.
+
+Use a numeric input (or slider) with:
+
+min = 1, max = 10.
+
+
+Display total cost dynamically:
+
+Total: $ (BADGE_SLOT_PRICE × selectedQuantity)
+
+Include an “Add to Cart” button.
+
+
+When checkout completes successfully:
+
+Add the purchased slots to the viewer’s account.
+
+Update their badge capacity immediately in the frontend.
+
+
+
+
+---
+
+🧠 3. Limit Displayed Badges + “See More” Dialog
+
+On the viewer’s alumni page, show only 4 badges by default (most recent first).
+
+Add a “See More” button below that section.
+
+Clicking it opens a dialog (or modal) showing all badges in a grid or list format.
+
+The dialog should support scrolling and have a close button.
+
+
+
+---
+
+⚙️ 4. Backend Adjustments
+
+Update the database (if needed) to include a field in the viewer table:
+
+badge_slots: number;
+
+Default: 4
+
+When new slots are purchased, increase this field accordingly.
+
+Ensure deletion endpoints handle cross-account cleanup (viewer ↔ school).
+
+Add a safeguard to prevent users from sending more badge requests than their current slot count.
+
+
+
+---
+
+🧩 5. Optional Polishing
+
+Add toast notifications for:
+
+“Badge deleted successfully”
+
+“Purchase complete”
+
+“You’ve reached your badge slot limit”
+
+
+Add loading indicators while fetching badges or processing purchases.
+
+
+
+---
+
+Files likely involved:
+
+viewer/pages/alumni.tsx or similar
+
+school/pages/alumni-requests.tsx
+
+shared/constants.ts
+
+api/badges.ts or routes/badges.ts
+
+components/BadgeList.tsx
+
+components/BuySlotsDialog.tsx
+
+
+
+---
+
+Final Note:
+Ensure that every badge record has a unique badge_id that both the viewer and school reference, so sync operations (approve, delete, rollback) remain accurate.

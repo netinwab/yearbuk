@@ -1,0 +1,97 @@
+I want to improve my app’s routing system to behave like Instagram, with smart automatic redirects depending on whether the user is logged in and their role. I also want a short loading splash screen while authentication is being verified.
+
+
+---
+
+🎯 Objective
+
+Implement a smart authentication-based routing system for these pages:
+
+/ (main domain)
+
+/login
+
+/signup (and its variants /school-signup and /viewer-signup)
+
+
+Add a small loading splash/screen (like Instagram’s spinner or logo display) that appears while checking the login/session state, so the user doesn’t briefly see the wrong page.
+
+
+---
+
+⚙️ Expected Behavior
+
+/ (root domain)
+
+Automatically check login/session state.
+
+If the user is logged in:
+
+If role === "school", redirect to /school-dashboard
+
+If role === "viewer", redirect to /viewer-dashboard
+
+If role === "super_admin", redirect to /super-admin
+
+
+If not logged in → redirect to /login
+
+Show the loading splash while this check happens (to prevent flashes).
+
+
+/login
+
+If the user is already logged in → redirect to their appropriate dashboard (same logic as above).
+
+Otherwise → stay on the login page.
+
+Also display the splash briefly during verification.
+
+
+/signup (and its variants)
+
+Add smart routing logic to /signup, /school-signup, and /viewer-signup:
+
+If a logged-in user tries to access any of these → immediately redirect them to their dashboard (they shouldn’t see the signup page again).
+
+If not logged in → show the correct signup form.
+
+
+Show the loading splash while verifying session state.
+
+
+
+---
+
+🧩 Implementation Notes
+
+Use the existing authentication/session token logic to determine if the user is logged in and their role.
+
+If tokens are stored in localStorage, cookies, or an auth context, make sure the check happens before rendering page content.
+
+The splash screen should:
+
+Show a simple spinner or the Waibuk logo.
+
+Automatically disappear after the login state is determined.
+
+
+Keep URLs clean — avoid unnecessary reloads.
+
+Integrate smoothly with the current router (e.g., Wouter or React Router, whichever the app uses).
+
+Make the splash reusable (e.g., a <LoadingSplash /> component that can be imported and reused globally).
+
+
+
+---
+
+✅ End Result
+
+Visiting / automatically redirects users based on login status and role.
+
+Visiting /login or /signup while logged in skips those pages.
+
+A clean splash screen briefly appears while authentication is verified, preventing visual flickers.
+
+The experience feels fast, professional, and seamless — just like major apps (Instagram, X, etc).

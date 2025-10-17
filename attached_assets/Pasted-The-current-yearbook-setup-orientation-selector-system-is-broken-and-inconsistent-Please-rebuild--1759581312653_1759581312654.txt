@@ -1,0 +1,96 @@
+                                          The current yearbook setup (orientation selector) system is broken and inconsistent. Please rebuild it cleanly from scratch while keeping the existing logic intact.
+Here’s the full breakdown of what needs fixing and how it should work:
+
+
+---
+
+🧩 The Problem:
+
+The setup window sometimes appears twice when a school clicks Manage for the first time.
+
+After setup, it still reappears on every page reload instead of being a one-time setup.
+
+The logic is inconsistent and messy — probably due to conflicting frontend checks and delayed backend updates.
+
+
+
+---
+
+✅ Rebuild Instructions:
+
+1. Database structure:
+
+Ensure the yearbook schema includes:
+
+isInitialized: boolean // default: false
+orientation: "portrait" | "landscape" | null
+
+When a new yearbook is first created, isInitialized should be set to false.
+
+
+
+2. Initialization trigger:
+
+When a school clicks Manage for a year that has no yearbook record yet, create the yearbook entry with isInitialized: false.
+
+When they click Manage again, fetch the yearbook from the DB and check:
+
+If isInitialized === false, show the setup window.
+
+If isInitialized === true, skip the setup window and go straight to the yearbook management UI.
+
+
+
+
+3. Setup flow:
+
+When the school selects their orientation and confirms:
+
+Immediately call the backend (/api/yearbook/update or similar) to set:
+
+isInitialized: true
+orientation: selectedOption
+
+Wait for confirmation from the API before closing the setup modal.
+
+After confirmation, reload the management view.
+
+
+
+
+4. Frontend logic (cleanup):
+
+Remove any duplicate or nested rendering conditions that might cause the setup window to appear twice.
+
+Make sure there is only one place where the check for isInitialized happens.
+
+Ensure setup modal state is properly cleared from memory after it closes.
+
+
+
+5. Verification:
+
+Test this exact flow:
+
+First time clicking Manage → one setup window only.
+
+After orientation is selected → it disappears and never shows again.
+
+Reload page → no setup window appears.
+
+Delete yearbook → setup resets correctly.
+
+
+
+
+
+
+---
+
+⚙️ Notes:
+
+Keep the UI and design consistent with the current app layout.
+
+Do not change existing styling, component structure, or routing — just clean up and rebuild the logic flow.
+
+Once fixed, test both cases: a new yearbook and an already initialized one.
